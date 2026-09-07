@@ -149,4 +149,21 @@ class ExampleTest extends TestCase
         $response->assertRedirect('/labadmin/settings');
         $response->assertSessionHas('success');
     }
+
+    public function test_labadmin_test_email_endpoint(): void
+    {
+        \Illuminate\Support\Facades\Mail::fake();
+        $user = User::where('role_id', 2)->first();
+        $response = $this->actingAs($user)->post('/labadmin/testemail', [
+            'test_email' => 'testpatient@example.com',
+            'smtp_host' => 'localhost',
+            'smtp_port' => 1025,
+            'smtp_encryption' => 'none',
+            'smtp_user' => 'admin@rbjlis.com',
+            'smtp_pass' => 'secret123',
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure(['status', 'message']);
+    }
 }

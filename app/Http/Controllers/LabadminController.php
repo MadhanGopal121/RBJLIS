@@ -23,6 +23,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class LabadminController extends Controller
@@ -648,6 +650,54 @@ class LabadminController extends Controller
         $lab->save();
 
         return redirect()->route('labadmin.settings')->with('success', 'Laboratory settings, payment gateways, and notification integrations updated successfully.');
+    }
+
+    // --- Test SMTP Connection & Email ---
+    public function testEmail(Request $request)
+    {
+        $request->validate([
+            'test_email' => 'required|email',
+        ]);
+
+        $labId = $this->getLabId();
+        $lab = Lab::find($labId);
+
+        $smtpHost = $request->smtp_host ?: ($lab->smtp_host ?: config('mail.mailers.smtp.host'));
+        $smtpPort = $request->smtp_port ?: ($lab->smtp_port ?: config('mail.mailers.smtp.port', 587));
+        $smtpUser = $request->smtp_user ?: ($lab->smtp_user ?: config('mail.mailers.smtp.username'));
+        $smtpPass = $request->smtp_pass ?: ($lab->smtp_pass ?: config('mail.mailers.smtp.password'));
+        $smtpEnc = $request->smtp_encryption ?: ($lab->smtp_encryption ?: 'tls');
+
+        if ($smtpHost && $smtpUser && $smtpPass) {
+            config([
+                'mail.default' => 'smtp',
+                'mail.mailers.smtp.host' => $smtpHost,
+                'mail.mailers.smtp.port' => (int)$smtpPort,
+                'mail.mailers.smtp.encryption' => ($smtpEnc === 'none') ? null : $smtpEnc,
+                'mail.mailers.smtp.username' => $smtpUser,
+                'mail.mailers.smtp.password' => $smtpPass,
+                'mail.from.address' => $smtpUser,
+                'mail.from.name' => $lab->name ?? 'RBJLIS Diagnostics',
+            ]);
+        }
+
+        try {
+            Mail::raw("Hello!\n\nThis is a test email sent from your RBJLIS Laboratory Information System to verify your SMTP email integration.\n\nLaboratory: " . ($lab->name ?? 'RBJ Diagnostics') . "\nStatus: SMTP Connection & Delivery Successful!\nTimestamp: " . now()->toDateTimeString(), function ($msg) use ($request, $lab) {
+                $msg->to($request->test_email)
+                    ->subject("SMTP Test Email Verification - " . ($lab->name ?? 'RBJLIS'));
+            });
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Test email sent successfully to ' . $request->test_email . '! Please check your inbox or spam folder.'
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('SMTP Test Error: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to send email: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     // --- Reports Register ---

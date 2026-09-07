@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Laboratory Settings & Integrations - RBJLIS')
 
@@ -244,6 +244,23 @@
                   </div>
                 </div>
               </div>
+
+              <!-- Test Email Panel -->
+              <div class="p-3 mt-3 rounded" style="background: #F0FDF4; border: 1px solid #BBF7D0;">
+                <h6 class="font-weight-bold text-success mb-2">
+                  <i class="fas fa-paper-plane mr-1"></i> Test SMTP Email Connection Now
+                </h6>
+                <p class="text-muted small mb-2">Enter any email address to test your SMTP configuration and receive an instant test email.</p>
+                <div class="input-group" style="max-width: 500px;">
+                  <input type="email" id="test_email_input" class="form-control" placeholder="Enter recipient email (e.g. yourname@gmail.com)">
+                  <div class="input-group-append">
+                    <button type="button" id="btn_send_test_email" class="btn btn-success font-weight-bold">
+                      <i class="fas fa-paper-plane mr-1"></i> Send Test Email
+                    </button>
+                  </div>
+                </div>
+                <div id="test_email_feedback" class="mt-2 small" style="display: none;"></div>
+              </div>
             </div>
           </div>
 
@@ -263,3 +280,51 @@
   </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+  $('#btn_send_test_email').on('click', function() {
+    var email = $('#test_email_input').val();
+    if (!email) {
+      alert('Please enter a recipient email address to test.');
+      return;
+    }
+
+    var $btn = $(this);
+    var $feedback = $('#test_email_feedback');
+    $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Sending...');
+    $feedback.hide().removeClass('text-success text-danger');
+
+    $.ajax({
+      url: "{{ route('labadmin.testemail') }}",
+      type: "POST",
+      data: {
+        test_email: email,
+        smtp_host: $('#smtp_host').val(),
+        smtp_port: $('#smtp_port').val(),
+        smtp_encryption: $('#smtp_encryption').val(),
+        smtp_user: $('#smtp_user').val(),
+        smtp_pass: $('#smtp_pass').val(),
+        _token: "{{ csrf_token() }}"
+      },
+      success: function(resp) {
+        $btn.prop('disabled', false).html('<i class="fas fa-paper-plane mr-1"></i> Send Test Email');
+        $feedback.show().addClass('text-success font-weight-bold').html('<i class="fas fa-check-circle mr-1"></i> ' + resp.message);
+        if (typeof toastr !== 'undefined') {
+          toastr.success(resp.message);
+        }
+      },
+      error: function(xhr) {
+        $btn.prop('disabled', false).html('<i class="fas fa-paper-plane mr-1"></i> Send Test Email');
+        var msg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : 'Error sending test email. Please check your SMTP settings.';
+        $feedback.show().addClass('text-danger font-weight-bold').html('<i class="fas fa-times-circle mr-1"></i> ' + msg);
+        if (typeof toastr !== 'undefined') {
+          toastr.error(msg);
+        }
+      }
+    });
+  });
+});
+</script>
+@endpush

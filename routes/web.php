@@ -94,6 +94,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/deletebill', [LabadminController::class, 'deletebill'])->name('deletebill');
         Route::get('/settings', [LabadminController::class, 'settings'])->name('settings');
         Route::post('/settings', [LabadminController::class, 'saveSettings'])->name('settings.post');
+        Route::post('/testemail', [LabadminController::class, 'testEmail'])->name('testemail');
         Route::get('/lastdayreport', [LabadminController::class, 'lastdayreport'])->name('lastdayreport');
     });
 
