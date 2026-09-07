@@ -108,9 +108,25 @@ class RbjlisSeeder extends Seeder
         );
 
         DB::table('users')->updateOrInsert(
-            ['email' => 'reception@rbjlis.com'],
+            ['email' => 'frontoffice@rbjlis.com'],
             [
                 'name' => 'Front Office Staff',
+                'password' => Hash::make('admin123'),
+                'lab_id' => 1,
+                'role_id' => 3,
+                'phone' => '9777777777',
+                'status' => 1,
+                'created_on' => now(),
+                'created_by' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        DB::table('users')->updateOrInsert(
+            ['email' => 'reception@rbjlis.com'],
+            [
+                'name' => 'Reception Staff',
                 'password' => Hash::make('admin123'),
                 'lab_id' => 1,
                 'role_id' => 3,
