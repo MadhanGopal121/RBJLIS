@@ -50,14 +50,14 @@ class LabinvestigationController extends Controller
         return view('labinvestigation.index', compact('samples', 'viewTitle'));
     }
 
-    // Pending Tests Queue (Sample collected, awaiting technician)
+    // Pending Tests Queue (Awaiting technician result entry)
     public function pendingtest()
     {
         $labId = $this->getLabId();
         $samples = Investigation::with([
             'patient', 'doctor', 'labtolab',
             'investigationTests' => function ($q) {
-                $q->where('specimen_by', '>', 0)->where('test_by', 0);
+                $q->where('test_by', 0);
             },
             'investigationTests.diagnosticstest.parameters',
             'investigationTests.investigationTestResults',
@@ -69,7 +69,7 @@ class LabinvestigationController extends Controller
         ->where('lab_id', $labId)
         ->where('status', 1)
         ->whereHas('investigationTests', function ($q) {
-            $q->where('specimen_by', '>', 0)->where('test_by', 0);
+            $q->where('test_by', 0);
         })
         ->latest('id')
         ->paginate(25);
