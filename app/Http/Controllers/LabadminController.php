@@ -662,28 +662,43 @@ class LabadminController extends Controller
         $labId = $this->getLabId();
         $lab = Lab::find($labId);
 
-        $smtpHost = $request->smtp_host ?: ($lab->smtp_host ?: config('mail.mailers.smtp.host'));
-        $smtpPort = $request->smtp_port ?: ($lab->smtp_port ?: config('mail.mailers.smtp.port', 587));
-        $smtpUser = $request->smtp_user ?: ($lab->smtp_user ?: config('mail.mailers.smtp.username'));
-        $smtpPass = $request->smtp_pass ?: ($lab->smtp_pass ?: config('mail.mailers.smtp.password'));
-        $smtpEnc = $request->smtp_encryption ?: ($lab->smtp_encryption ?: 'tls');
+        $smtpHost = trim($request->smtp_host ?: ($lab->smtp_host ?: config('mail.mailers.smtp.host', 'smtp.gmail.com')));
+        $smtpPort = (int)($request->smtp_port ?: ($lab->smtp_port ?: config('mail.mailers.smtp.port', 587)));
+        $smtpUser = trim($request->smtp_user ?: ($lab->smtp_user ?: config('mail.mailers.smtp.username', '')));
+        $smtpPass = str_replace(' ', '', (string)($request->smtp_pass ?: ($lab->smtp_pass ?: config('mail.mailers.smtp.password', ''))));
+        $smtpEnc = strtolower(trim($request->smtp_encryption ?: ($lab->smtp_encryption ?: 'tls')));
 
-        if ($smtpHost && $smtpUser && $smtpPass) {
-            config([
-                'mail.default' => 'smtp',
-                'mail.mailers.smtp.host' => $smtpHost,
-                'mail.mailers.smtp.port' => (int)$smtpPort,
-                'mail.mailers.smtp.encryption' => ($smtpEnc === 'none') ? null : $smtpEnc,
-                'mail.mailers.smtp.username' => $smtpUser,
-                'mail.mailers.smtp.password' => $smtpPass,
-                'mail.from.address' => $smtpUser,
-                'mail.from.name' => $lab->name ?? 'RBJLIS Diagnostics',
-            ]);
+        if (empty($smtpUser) || empty($smtpPass)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Please enter both your SMTP Username (Gmail address) and SMTP Password (16-character Google App Password).'
+            ], 200);
         }
 
+        // Port / Encryption compatibility auto-correction
+        if ($smtpPort === 465 && $smtpEnc !== 'ssl') {
+            $smtpEnc = 'ssl';
+        } elseif ($smtpPort === 587 && $smtpEnc !== 'tls') {
+            $smtpEnc = 'tls';
+        }
+
+        config([
+            'mail.default' => 'smtp',
+            'mail.mailers.smtp.host' => $smtpHost,
+            'mail.mailers.smtp.port' => $smtpPort,
+            'mail.mailers.smtp.encryption' => ($smtpEnc === 'none') ? null : $smtpEnc,
+            'mail.mailers.smtp.username' => $smtpUser,
+            'mail.mailers.smtp.password' => $smtpPass,
+            'mail.from.address' => $smtpUser,
+            'mail.from.name' => $lab->name ?? 'RBJLIS Diagnostics',
+        ]);
+
+        Mail::purge('smtp');
+
         try {
-            Mail::raw("Hello!\n\nThis is a test email sent from your RBJLIS Laboratory Information System to verify your SMTP email integration.\n\nLaboratory: " . ($lab->name ?? 'RBJ Diagnostics') . "\nStatus: SMTP Connection & Delivery Successful!\nTimestamp: " . now()->toDateTimeString(), function ($msg) use ($request, $lab) {
+            Mail::raw("Hello!\n\nThis is an official verification test email sent from your RBJLIS Laboratory Information System to confirm that your SMTP email delivery is functioning perfectly.\n\nLaboratory: " . ($lab->name ?? 'RBJ Diagnostics') . "\nRecipient: " . $request->test_email . "\nTimestamp: " . now()->toDateTimeString() . "\nStatus: Connection & Authentication Successful! ✓", function ($msg) use ($request, $lab, $smtpUser) {
                 $msg->to($request->test_email)
+                    ->from($smtpUser, $lab->name ?? 'RBJLIS Diagnostics')
                     ->subject("SMTP Test Email Verification - " . ($lab->name ?? 'RBJLIS'));
             });
 
@@ -692,11 +707,20 @@ class LabadminController extends Controller
                 'message' => 'Test email sent successfully to ' . $request->test_email . '! Please check your inbox or spam folder.'
             ]);
         } catch (\Throwable $e) {
-            Log::error('SMTP Test Error: ' . $e->getMessage());
+            $errMsg = $e->getMessage();
+            Log::error('SMTP Test Error: ' . $errMsg);
+
+            $userHelp = $errMsg;
+            if (stripos($errMsg, '535') !== false || stripos($errMsg, 'Username and Password not accepted') !== false || stripos($errMsg, 'BadCredentials') !== false) {
+                $userHelp = 'Gmail rejected authentication: Please make sure you are using a 16-character Google App Password (not your regular Gmail login password) with 2-Step Verification turned ON at https://myaccount.google.com/apppasswords.';
+            } elseif (stripos($errMsg, 'Connection could not be established') !== false || stripos($errMsg, 'timed out') !== false) {
+                $userHelp = 'Could not establish connection with ' . $smtpHost . ':' . $smtpPort . '. Please check Port (587 for TLS or 465 for SSL) or network firewall.';
+            }
+
             return response()->json([
                 'status' => 'error',
-                'message' => 'Failed to send email: ' . $e->getMessage()
-            ], 500);
+                'message' => $userHelp
+            ], 200);
         }
     }
 

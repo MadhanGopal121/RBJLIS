@@ -310,15 +310,22 @@ $(document).ready(function() {
       },
       success: function(resp) {
         $btn.prop('disabled', false).html('<i class="fas fa-paper-plane mr-1"></i> Send Test Email');
-        $feedback.show().addClass('text-success font-weight-bold').html('<i class="fas fa-check-circle mr-1"></i> ' + resp.message);
-        if (typeof toastr !== 'undefined') {
-          toastr.success(resp.message);
+        if (resp.status === 'success') {
+          $feedback.show().removeClass('text-danger').addClass('text-success font-weight-bold').html('<i class="fas fa-check-circle mr-1"></i> ' + resp.message);
+          if (typeof toastr !== 'undefined') {
+            toastr.success(resp.message);
+          }
+        } else {
+          $feedback.show().removeClass('text-success').addClass('text-danger font-weight-bold').html('<i class="fas fa-exclamation-triangle mr-1"></i> ' + resp.message);
+          if (typeof toastr !== 'undefined') {
+            toastr.error(resp.message);
+          }
         }
       },
       error: function(xhr) {
         $btn.prop('disabled', false).html('<i class="fas fa-paper-plane mr-1"></i> Send Test Email');
-        var msg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : 'Error sending test email. Please check your SMTP settings.';
-        $feedback.show().addClass('text-danger font-weight-bold').html('<i class="fas fa-times-circle mr-1"></i> ' + msg);
+        var msg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : 'Error connecting to server. Please verify your settings and try again.';
+        $feedback.show().removeClass('text-success').addClass('text-danger font-weight-bold').html('<i class="fas fa-times-circle mr-1"></i> ' + msg);
         if (typeof toastr !== 'undefined') {
           toastr.error(msg);
         }
