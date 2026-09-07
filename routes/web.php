@@ -36,6 +36,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/password/changepassword', [PasswordController::class, 'changepassword'])->name('password.change');
     Route::get('/password/change', [PasswordController::class, 'changepassword'])->name('password.changepassword');
     Route::post('/password/changepassword', [PasswordController::class, 'updatePassword'])->name('password.change.post');
+    Route::post('/password/change', [PasswordController::class, 'updatePassword'])->name('password.changepassword.post');
 
     // Superadmin Module
     Route::prefix('superadmin')->name('superadmin.')->group(function () {
