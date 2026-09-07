@@ -79,4 +79,18 @@ class ExampleTest extends TestCase
         $response = $this->actingAs($user)->get('/profile');
         $response->assertStatus(200);
     }
+
+    public function test_print_bill_renders(): void
+    {
+        $user = User::where('role_id', 2)->first();
+        $response = $this->actingAs($user)->get('/print/bill?id=1');
+        $response->assertStatus(200);
+    }
+
+    public function test_print_report_renders(): void
+    {
+        $user = User::where('role_id', 2)->first();
+        $response = $this->actingAs($user)->get('/print/report?id=1');
+        $response->assertStatus(200);
+    }
 }
