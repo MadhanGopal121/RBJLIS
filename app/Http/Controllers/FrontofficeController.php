@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\BookingConfirmationMail;
 use App\Models\Diagnosticstest;
 use App\Models\Doctor;
 use App\Models\Investigation;
@@ -19,6 +20,8 @@ use App\Services\SmsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class FrontofficeController extends Controller
 {
@@ -184,16 +187,20 @@ class FrontofficeController extends Controller
 
             DB::commit();
 
-            // 6. Optional SMS
-            if ($patient->phone) {
-                $smsService->investigationCreate(
-                    $patient->name,
-                    $totalAmount - $discountAmount,
-                    $labName,
-                    $paidAmount,
-                    $balanceAmount,
-                    $patient->phone
-                );
+            // 6. Automated Multi-Channel Dispatch (SMS & Email)
+            try {
+                $sms = new SmsService(Auth::user()->lab);
+                $sms->sendBookingConfirmation($investigation);
+            } catch (\Throwable $e) {
+                Log::error('SMS Dispatch Error: ' . $e->getMessage());
+            }
+
+            try {
+                if ($patient->email) {
+                    Mail::to($patient->email)->send(new BookingConfirmationMail($investigation));
+                }
+            } catch (\Throwable $e) {
+                Log::error('Email Dispatch Error: ' . $e->getMessage());
             }
 
             if ($request->ajax() || $request->wantsJson()) {
@@ -271,14 +278,27 @@ class FrontofficeController extends Controller
         ]);
 
         $labId = $this->getLabId();
-        $inv = Investigation::where('lab_id', $labId)->findOrFail($request->investigation_id);
+        $inv = Investigation::with(['patient', 'lab', 'investigationTests.diagnosticstest'])->where('lab_id', $labId)->findOrFail($request->investigation_id);
+
+        $gateway = 'cash';
+        if (stripos($request->paymenttype, 'upi') !== false) {
+            $gateway = 'upi_manual';
+        } elseif (stripos($request->paymenttype, 'card') !== false || stripos($request->paymenttype, 'stripe') !== false) {
+            $gateway = 'stripe';
+        } elseif (stripos($request->paymenttype, 'pos') !== false) {
+            $gateway = 'pos';
+        }
 
         LabPayment::create([
             'lab_id' => $labId,
             'investigation_id' => $inv->id,
             'paymenttype' => $request->paymenttype,
+            'payment_gateway' => $gateway,
             'payment_amount' => $request->amount,
             'trans_number' => $request->trans_number,
+            'gateway_order_id' => $request->trans_number,
+            'gateway_payment_id' => $request->trans_number,
+            'gateway_status' => 'completed',
             'received_date' => now(),
             'received_by' => Auth::id() ?? 1,
         ]);
@@ -287,7 +307,19 @@ class FrontofficeController extends Controller
         $inv->balance_amount = max(0, $inv->total_amount - ($paidSoFar + $inv->discount));
         $inv->save();
 
-        return back()->with('success', 'Payment received successfully.');
+        // Dispatch SMS & Email
+        try {
+            $sms = new SmsService($inv->lab);
+            $sms->sendBookingConfirmation($inv);
+        } catch (\Throwable $e) {}
+
+        try {
+            if ($inv->patient?->email) {
+                Mail::to($inv->patient->email)->send(new BookingConfirmationMail($inv));
+            }
+        } catch (\Throwable $e) {}
+
+        return back()->with('success', 'Payment received and receipt updated successfully.');
     }
 
     // --- Lab B2B Payments ---

@@ -18,6 +18,10 @@ class LabPayment extends Model
         'paymenttype',
         'payment_amount',
         'trans_number',
+        'payment_gateway',
+        'gateway_order_id',
+        'gateway_payment_id',
+        'gateway_status',
         'received_date',
         'received_by',
     ];

@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 class PrintController extends Controller
 {
     // Printable Thermal / A4 Receipt
-    public function printbill(Request $request)
+    public function printbill(Request $request, QrcodeService $qrcodeService)
     {
         $request->validate(['id' => 'required|integer']);
 
@@ -30,7 +30,13 @@ class PrintController extends Controller
 
         $lab = $bill->lab ?: Lab::find(1);
 
-        return view('print.printbill', compact('bill', 'lab'));
+        $amountToPay = $bill->balance_amount > 0 ? (float)$bill->balance_amount : (float)$bill->total_amount;
+        $vpa = $lab->upi_id ?: 'rbjlab@upi';
+        $payeeName = $lab->upi_name ?: $lab->name;
+        $transRef = 'INV' . $bill->id;
+        $upiQrPath = $qrcodeService->generateUpiQr($vpa, $payeeName, $amountToPay, $transRef, 'INV-' . $bill->id);
+
+        return view('print.printbill', compact('bill', 'lab', 'upiQrPath', 'vpa', 'amountToPay'));
     }
 
     // PDF / Printable Diagnostic Test Report

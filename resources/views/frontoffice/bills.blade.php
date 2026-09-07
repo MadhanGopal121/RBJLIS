@@ -142,6 +142,9 @@
                     <button type="button" class="btn btn-xs btn-warning collectpaybtn" data-id="{{ $b->id }}" data-name="{{ $b->patient->name ?? 'N/A' }}" data-due="{{ $balance }}">
                       <i class="fas fa-hand-holding-usd"></i> Pay
                     </button>
+                    <a href="{{ route('payment.checkout', ['id' => $b->id]) }}" target="_blank" class="btn btn-xs btn-success" title="Online UPI / Stripe Portal">
+                      <i class="fas fa-qrcode"></i> UPI / Card
+                    </a>
                   @endif
                   <a href="{{ route('print.bill', ['id' => $b->id]) }}" target="_blank" class="btn btn-xs btn-info" title="Print Receipt"><i class="fas fa-print"></i> Receipt</a>
                   <a href="{{ route('print.report', ['id' => $b->id]) }}" target="_blank" class="btn btn-xs btn-primary" title="View Report"><i class="fas fa-file-pdf"></i> Report</a>

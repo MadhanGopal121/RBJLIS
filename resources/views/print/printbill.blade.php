@@ -136,28 +136,39 @@
       $balance = $bill->total_amount - ($paid + $bill->discount);
     @endphp
 
-    <table class="totals-table">
-      <tr>
-        <td><strong>Gross Total:</strong></td>
-        <td style="text-align: right;">Rs. {{ number_format($bill->total_amount, 2) }}</td>
-      </tr>
-      @if($bill->discount > 0)
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 15px;">
+      <div style="border: 1px dashed #007bff; padding: 10px; border-radius: 6px; text-align: center; max-width: 200px; background: #F8FAFC;">
+        @if(!empty($upiQrPath))
+          <img src="{{ asset($upiQrPath) }}" style="width: 110px; height: 110px;" alt="UPI QR Code"><br>
+          <strong style="font-size: 11px; color: #007bff;">Scan & Pay via UPI</strong><br>
+          <small style="font-size: 10px; color: #555;">GPay / PhonePe / Paytm</small><br>
+          <small style="font-size: 10px; color: #777;">UPI VPA: {{ $vpa ?? 'rbjlab@upi' }}</small>
+        @endif
+      </div>
+
+      <table class="totals-table" style="width: 48%; margin-left: auto;">
         <tr>
-          <td><strong>Discount:</strong></td>
-          <td style="text-align: right; color: #28a745;">- Rs. {{ number_format($bill->discount, 2) }}</td>
+          <td><strong>Gross Total:</strong></td>
+          <td style="text-align: right;">Rs. {{ number_format($bill->total_amount, 2) }}</td>
         </tr>
-      @endif
-      <tr>
-        <td><strong>Amount Paid:</strong></td>
-        <td style="text-align: right; color: #007bff; font-weight: bold;">Rs. {{ number_format($paid, 2) }}</td>
-      </tr>
-      <tr>
-        <td><strong>Balance Due:</strong></td>
-        <td style="text-align: right; color: {{ $balance > 0 ? '#dc3545' : '#28a745' }}; font-weight: bold;">
-          Rs. {{ number_format($balance, 2) }}
-        </td>
-      </tr>
-    </table>
+        @if($bill->discount > 0)
+          <tr>
+            <td><strong>Discount:</strong></td>
+            <td style="text-align: right; color: #28a745;">- Rs. {{ number_format($bill->discount, 2) }}</td>
+          </tr>
+        @endif
+        <tr>
+          <td><strong>Amount Paid:</strong></td>
+          <td style="text-align: right; color: #007bff; font-weight: bold;">Rs. {{ number_format($paid, 2) }}</td>
+        </tr>
+        <tr>
+          <td><strong>Balance Due:</strong></td>
+          <td style="text-align: right; color: {{ $balance > 0 ? '#dc3545' : '#28a745' }}; font-weight: bold;">
+            Rs. {{ number_format($balance, 2) }}
+          </td>
+        </tr>
+      </table>
+    </div>
 
     <div class="footer">
       <p>{{ $lab->defult_notes ?: 'Thank you for choosing our laboratory services. Reports can be verified online.' }}</p>

@@ -6,6 +6,7 @@ use App\Http\Controllers\LabadminController;
 use App\Http\Controllers\LabinvestigationController;
 use App\Http\Controllers\LlController;
 use App\Http\Controllers\PasswordController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PrintController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
@@ -25,6 +26,13 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Public Online QR Report Verification / Download
 Route::get('/report/{path}', [ReportController::class, 'index'])->name('report.view');
+
+// Patient Online Payment Portal & Callbacks (UPI QR & Stripe)
+Route::get('/pay/{id}', [PaymentController::class, 'checkout'])->name('payment.checkout');
+Route::post('/pay/{id}/stripe-checkout', [PaymentController::class, 'stripeCheckout'])->name('payment.stripe.checkout');
+Route::get('/payment/stripe/success', [PaymentController::class, 'stripeSuccess'])->name('payment.stripe.success');
+Route::get('/payment/stripe/cancel', [PaymentController::class, 'stripeCancel'])->name('payment.stripe.cancel');
+Route::post('/pay/{id}/upi-submit', [PaymentController::class, 'upiSubmitUtr'])->name('payment.upi.submit');
 
 // Authenticated Routes
 Route::middleware(['auth'])->group(function () {

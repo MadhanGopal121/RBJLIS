@@ -599,6 +599,31 @@ class LabadminController extends Controller
         $lab->address = $request->address;
         $lab->defult_notes = $request->defult_notes;
 
+        // UPI Settings
+        $lab->upi_id = $request->upi_id;
+        $lab->upi_name = $request->upi_name;
+        $lab->enable_upi = $request->has('enable_upi');
+
+        // Stripe Settings
+        $lab->stripe_key = $request->stripe_key;
+        $lab->stripe_secret = $request->stripe_secret;
+        $lab->stripe_webhook_secret = $request->stripe_webhook_secret;
+        $lab->enable_stripe = $request->has('enable_stripe');
+
+        // SMS Settings
+        $lab->sms_provider = $request->sms_provider ?? 'bulksmsgateway';
+        $lab->sms_api_key = $request->sms_api_key;
+        $lab->sms_sender_id = $request->sms_sender_id;
+        $lab->enable_sms = $request->has('enable_sms');
+
+        // Email & SMTP Settings
+        $lab->enable_email = $request->has('enable_email');
+        $lab->smtp_host = $request->smtp_host;
+        $lab->smtp_port = $request->smtp_port;
+        $lab->smtp_user = $request->smtp_user;
+        $lab->smtp_pass = $request->smtp_pass;
+        $lab->smtp_encryption = $request->smtp_encryption;
+
         if ($request->hasFile('logoimg')) {
             $logoPath = $imageService->upload($request->file('logoimg'), 'uploads');
             if ($logoPath) {
@@ -622,7 +647,7 @@ class LabadminController extends Controller
 
         $lab->save();
 
-        return redirect()->route('labadmin.settings')->with('success', 'Laboratory settings and branding updated.');
+        return redirect()->route('labadmin.settings')->with('success', 'Laboratory settings, payment gateways, and notification integrations updated successfully.');
     }
 
     // --- Reports Register ---

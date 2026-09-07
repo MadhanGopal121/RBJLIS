@@ -11,7 +11,8 @@
         "endroid/qr-code": "^6.0",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
-        "picqer/php-barcode-generator": "^3.3"
+        "picqer/php-barcode-generator": "^3.3",
+        "stripe/stripe-php": "^21.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

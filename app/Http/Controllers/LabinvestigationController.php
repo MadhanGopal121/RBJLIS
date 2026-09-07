@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ReportReadyMail;
 use App\Models\Diagnosticstest;
 use App\Models\Investigation;
 use App\Models\InvestigationTest;
@@ -11,10 +12,13 @@ use App\Models\Parameter;
 use App\Models\User;
 use App\Services\BarcodeService;
 use App\Services\QrcodeService;
+use App\Services\SmsService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class LabinvestigationController extends Controller
 {
@@ -292,7 +296,28 @@ class LabinvestigationController extends Controller
             );
         }
 
-        return redirect()->back()->with('success', 'Test investigation results updated successfully.');
+        // Notify patient when test report is approved
+        if ($it->status == 5) {
+            $inv = Investigation::with(['patient', 'lab', 'investigationTests.diagnosticstest'])->find($it->investigation_id);
+            if ($inv) {
+                try {
+                    $sms = new SmsService($inv->lab);
+                    $sms->sendReportReady($inv);
+                } catch (\Throwable $e) {
+                    Log::error('Report ready SMS error: ' . $e->getMessage());
+                }
+
+                try {
+                    if ($inv->patient?->email) {
+                        Mail::to($inv->patient->email)->send(new ReportReadyMail($inv));
+                    }
+                } catch (\Throwable $e) {
+                    Log::error('Report ready Email error: ' . $e->getMessage());
+                }
+            }
+        }
+
+        return redirect()->back()->with('success', 'Test investigation results updated and report finalized successfully.');
     }
 
     // Batch Approve Reports

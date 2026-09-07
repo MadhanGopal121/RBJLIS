@@ -109,4 +109,44 @@ class ExampleTest extends TestCase
 
         $response->assertSessionHas('success');
     }
+
+    public function test_payment_checkout_portal_renders(): void
+    {
+        $response = $this->get('/pay/1');
+        $response->assertStatus(200);
+        $response->assertSee('Secure Diagnostic Payment');
+        $response->assertSee('UPI QR');
+    }
+
+    public function test_stripe_checkout_success_flow(): void
+    {
+        $response = $this->get('/payment/stripe/success?session_id=mock_123&inv_id=1&mock=1&amount=500');
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+    }
+
+    public function test_upi_utr_submission(): void
+    {
+        $response = $this->post('/pay/1/upi-submit', [
+            'trans_number' => '423987123456',
+            'payment_amount' => 500,
+        ]);
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+    }
+
+    public function test_labadmin_settings_save_integrations(): void
+    {
+        $user = User::where('role_id', 2)->first();
+        $response = $this->actingAs($user)->post('/labadmin/settings', [
+            'address' => '789 Medical Boulevard, Chennai',
+            'upi_id' => 'customlab@upi',
+            'upi_name' => 'Custom Diagnostic Center',
+            'enable_upi' => 'on',
+            'enable_email' => 'on',
+        ]);
+
+        $response->assertRedirect('/labadmin/settings');
+        $response->assertSessionHas('success');
+    }
 }
