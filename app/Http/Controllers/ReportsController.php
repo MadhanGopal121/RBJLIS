@@ -22,6 +22,7 @@ class ReportsController extends Controller
     public function index(Request $request)
     {
         $labId = Auth::user()->lab_id ?? 1;
+        $labId = ($labId > 0) ? (int)$labId : 1;
 
         $query = Investigation::with([
             'patient', 'doctor', 'labtolab',

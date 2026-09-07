@@ -154,5 +154,244 @@ class RbjlisSeeder extends Seeder
                 'updated_at' => now(),
             ]
         );
+
+        // 5. Demo Doctor
+        DB::table('doctors')->updateOrInsert(
+            ['id' => 1],
+            [
+                'lab_id' => 1,
+                'doctor_name' => 'Sharma, MD',
+                'clinic_name' => 'City Heart & Diagnostic Clinic',
+                'email' => 'drsharma@example.com',
+                'phone' => '9822334455',
+                'discount' => 10.00,
+                'status' => 1,
+                'created_by' => 1,
+                'created_on' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        // 6. Demo Diagnostic Tests
+        DB::table('diagnosticstests')->updateOrInsert(
+            ['id' => 1],
+            [
+                'lab_id' => 1,
+                'department_id' => 1,
+                'name' => 'Complete Blood Count (CBC)',
+                'short_name' => 'CBC',
+                'sample_type' => 'EDTA Whole Blood',
+                'method' => 'Automated Cell Counter',
+                'price' => 350.00,
+                'b2b_price' => 200.00,
+                'status' => 1,
+                'created_by' => 1,
+                'created_on' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        DB::table('diagnosticstests')->updateOrInsert(
+            ['id' => 2],
+            [
+                'lab_id' => 1,
+                'department_id' => 2,
+                'name' => 'Lipid Profile',
+                'short_name' => 'LIPID',
+                'sample_type' => 'Plain Serum (Fasting)',
+                'method' => 'Enzymatic Colorimetric',
+                'price' => 650.00,
+                'b2b_price' => 400.00,
+                'status' => 1,
+                'created_by' => 1,
+                'created_on' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        // 7. Demo Parameters for CBC
+        DB::table('parameters')->updateOrInsert(
+            ['id' => 1],
+            [
+                'lab_id' => 1,
+                'test_id' => 1,
+                'name' => 'Hemoglobin (Hb)',
+                'units' => 'g/dL',
+                'default_value' => '13.0 - 17.0',
+                'type' => 'value',
+                'sort' => 1,
+                'status' => 1,
+                'created_by' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        DB::table('parameters')->updateOrInsert(
+            ['id' => 2],
+            [
+                'lab_id' => 1,
+                'test_id' => 1,
+                'name' => 'Total Leucocyte Count (WBC)',
+                'units' => '/cumm',
+                'default_value' => '4000 - 11000',
+                'type' => 'value',
+                'sort' => 2,
+                'status' => 1,
+                'created_by' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        DB::table('parameters')->updateOrInsert(
+            ['id' => 3],
+            [
+                'lab_id' => 1,
+                'test_id' => 1,
+                'name' => 'Platelet Count',
+                'units' => '/cumm',
+                'default_value' => '150000 - 450000',
+                'type' => 'value',
+                'sort' => 3,
+                'status' => 1,
+                'created_by' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        // 8. Demo Parameters for Lipid Profile
+        DB::table('parameters')->updateOrInsert(
+            ['id' => 4],
+            [
+                'lab_id' => 1,
+                'test_id' => 2,
+                'name' => 'Total Cholesterol',
+                'units' => 'mg/dL',
+                'default_value' => '< 200',
+                'type' => 'value',
+                'sort' => 1,
+                'status' => 1,
+                'created_by' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        DB::table('parameters')->updateOrInsert(
+            ['id' => 5],
+            [
+                'lab_id' => 1,
+                'test_id' => 2,
+                'name' => 'Triglycerides',
+                'units' => 'mg/dL',
+                'default_value' => '< 150',
+                'type' => 'value',
+                'sort' => 2,
+                'status' => 1,
+                'created_by' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        DB::table('parameters')->updateOrInsert(
+            ['id' => 6],
+            [
+                'lab_id' => 1,
+                'test_id' => 2,
+                'name' => 'HDL (Good) Cholesterol',
+                'units' => 'mg/dL',
+                'default_value' => '> 40',
+                'type' => 'value',
+                'sort' => 3,
+                'status' => 1,
+                'created_by' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        // 9. Demo Patient
+        DB::table('patients')->updateOrInsert(
+            ['id' => 1],
+            [
+                'lab_id' => 1,
+                'unique_id' => 'RBJ00001',
+                'title' => 'Mr',
+                'name' => 'Rajesh Kumar',
+                'age' => '45',
+                'gender' => 'Male',
+                'phone' => '9876543210',
+                'email' => 'rajesh.kumar@example.com',
+                'address' => '12, MG Road, Health City',
+                'created_by' => 1,
+                'created_on' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        // 10. Demo Investigation Order
+        DB::table('investigations')->updateOrInsert(
+            ['id' => 1],
+            [
+                'lab_id' => 1,
+                'patient_id' => 1,
+                'doctor_id' => 1,
+                'total_amount' => 1000.00,
+                'discount' => 100.00,
+                'paid_amount' => 900.00,
+                'due_amount' => 0.00,
+                'notes' => 'Fasting sample. Routine health checkup.',
+                'status' => 1,
+                'created_by' => 1,
+                'created_on' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        // Investigation Test 1 (CBC)
+        DB::table('investigation_test')->updateOrInsert(
+            ['id' => 1],
+            [
+                'investigation_id' => 1,
+                'test_id' => 1,
+                'test_price' => 350.00,
+                'specimen_by' => 0,
+                'test_by' => 0,
+                'authenticated_by' => 0,
+                'approved_by' => 0,
+                'is_emergency' => 0,
+                'is_declined' => 0,
+                'created_on' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        // Investigation Test 2 (Lipid Profile)
+        DB::table('investigation_test')->updateOrInsert(
+            ['id' => 2],
+            [
+                'investigation_id' => 1,
+                'test_id' => 2,
+                'test_price' => 650.00,
+                'specimen_by' => 0,
+                'test_by' => 0,
+                'authenticated_by' => 0,
+                'approved_by' => 0,
+                'is_emergency' => 0,
+                'is_declined' => 0,
+                'created_on' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
     }
 }

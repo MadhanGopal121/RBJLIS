@@ -25,7 +25,8 @@ class LabinvestigationController extends Controller
 
     private function getLabId(): int
     {
-        return Auth::user()->lab_id ?? 1;
+        $labId = Auth::user()->lab_id ?? 1;
+        return ($labId > 0) ? (int)$labId : 1;
     }
 
     // Worklist - All Recent Investigations
