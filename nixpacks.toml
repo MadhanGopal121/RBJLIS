@@ -3,11 +3,13 @@ nixPkgs = [
   'php82',
   'php82Extensions.pdo_mysql',
   'php82Extensions.gd',
+  'php82Extensions.imagick',
   'php82Extensions.zip',
   'php82Extensions.mbstring',
   'php82Extensions.bcmath',
   'php82Extensions.xml',
-  'php82Packages.composer'
+  'php82Packages.composer',
+  'imagemagick'
 ]
 
 [phases.install]
