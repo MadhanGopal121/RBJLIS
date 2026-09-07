@@ -1,5 +1,7 @@
+<input type="hidden" name="invtestid" value="{{ $invtest->investigation_id }}">
 <input type="hidden" name="invtid" value="{{ $invtest->investigation_id }}">
 <input type="hidden" name="resultid" value="{{ $invtest->id }}">
+<input type="hidden" name="investigationtest_id" value="{{ $invtest->id }}">
 <input type="hidden" name="diagnostictestid" value="{{ $test->id }}">
 
 <div class="row mb-3 p-3 bg-light rounded" style="border: 1px solid #E2E8F0;">

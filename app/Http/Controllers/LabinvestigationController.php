@@ -217,16 +217,16 @@ class LabinvestigationController extends Controller
     // Save Parameter Results & Advance Workflow
     public function updateresult(Request $request, BarcodeService $barcodeService, QrcodeService $qrcodeService)
     {
-        $request->validate([
-            'invtestid' => 'required|integer',
-            'resultid' => 'required|integer',
-        ]);
+        $resultId = $request->input('resultid') ?: $request->input('investigationtest_id');
+        if (!$resultId) {
+            return redirect()->back()->with('error', 'Investigation test identifier is missing.');
+        }
 
         $labId = $this->getLabId();
         $userId = Auth::id() ?? 1;
         $userRole = Auth::user()->role_id ?? 2;
 
-        $it = InvestigationTest::with(['investigation.patient', 'diagnosticstest'])->findOrFail($request->resultid);
+        $it = InvestigationTest::with(['investigation.patient', 'diagnosticstest'])->findOrFail($resultId);
 
         // Advance lifecycle status depending on role
         if ($userRole == 4) { // Technician
