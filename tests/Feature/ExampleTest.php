@@ -93,4 +93,20 @@ class ExampleTest extends TestCase
         $response = $this->actingAs($user)->get('/print/report?id=1');
         $response->assertStatus(200);
     }
+
+    public function test_save_test_results(): void
+    {
+        $user = User::where('role_id', 4)->first();
+        $response = $this->actingAs($user)->post('/labinvestigation/updateresult', [
+            'invtestid' => 1,
+            'resultid' => 1,
+            'diagnostictestid' => 1,
+            'parresultval_1_1' => '14.5',
+            'parresultval_2_1' => '7800',
+            'parresultval_3_1' => '250000',
+            'reportnotes' => 'CBC test values within normal limits.',
+        ]);
+
+        $response->assertSessionHas('success');
+    }
 }

@@ -248,7 +248,6 @@ class LabinvestigationController extends Controller
         }
 
         $it->notes = $request->reportnotes ?? $it->notes;
-        $it->highlight = $request->has('highlight') ? 1 : 0;
         $it->save();
 
         // Save Parameters
@@ -262,8 +261,12 @@ class LabinvestigationController extends Controller
                 $isBold = $request->has($boldKey) ? 1 : 0;
 
                 InvestigationTestResult::updateOrCreate(
-                    ['investigation_test_id' => $it->id, 'parameter_id' => $p->id],
                     [
+                        'investigation_test_id' => $it->id,
+                        'parameter_id' => $p->id
+                    ],
+                    [
+                        'investigation_id' => $it->investigation_id,
                         'result' => $val,
                         'is_bold' => $isBold,
                         'sort' => $p->sort ?? 0,
@@ -276,8 +279,12 @@ class LabinvestigationController extends Controller
             $isBold = $request->has('pardefaultval_') ? 1 : 0;
 
             InvestigationTestResult::updateOrCreate(
-                ['investigation_test_id' => $it->id, 'parameter_id' => 0],
                 [
+                    'investigation_test_id' => $it->id,
+                    'parameter_id' => 0
+                ],
+                [
+                    'investigation_id' => $it->investigation_id,
                     'result' => $val,
                     'is_bold' => $isBold,
                     'sort' => 0,
