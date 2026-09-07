@@ -27,7 +27,7 @@
                 <strong>{{ auth()->user()->name }}</strong><br>
                 <small class="text-muted">{{ auth()->user()->email }}</small>
               </div>
-              <span class="badge badge-info">{{ auth()->user()->role->name ?? 'User' }}</span>
+              <span class="badge badge-info">{{ auth()->user()->role?->name ?? 'User' }}</span>
             </div>
           </div>
 

@@ -64,4 +64,19 @@ class ExampleTest extends TestCase
         $response = $this->actingAs($user)->get('/ll');
         $response->assertStatus(200);
     }
+
+    public function test_change_password_page_renders(): void
+    {
+        $user = User::where('role_id', 1)->first();
+        $response = $this->actingAs($user)->get('/password/changepassword');
+        $response->assertStatus(200);
+        $response->assertSee('Change Account Password');
+    }
+
+    public function test_profile_page_renders(): void
+    {
+        $user = User::where('role_id', 1)->first();
+        $response = $this->actingAs($user)->get('/profile');
+        $response->assertStatus(200);
+    }
 }

@@ -33,8 +33,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile/index', [ProfileController::class, 'index'])->name('profile.index');
     Route::post('/profile/update', [ProfileController::class, 'updateProfile'])->name('profile.update');
     Route::post('/profile/signature', [ProfileController::class, 'updateSignature'])->name('profile.signature');
-    Route::get('/password/changepassword', [PasswordController::class, 'changepassword'])->name('password.change');
-    Route::get('/password/change', [PasswordController::class, 'changepassword'])->name('password.changepassword');
+    Route::get('/password/changepassword', [PasswordController::class, 'showChangePassword'])->name('password.change');
+    Route::get('/password/change', [PasswordController::class, 'showChangePassword'])->name('password.changepassword');
     Route::post('/password/changepassword', [PasswordController::class, 'updatePassword'])->name('password.change.post');
     Route::post('/password/change', [PasswordController::class, 'updatePassword'])->name('password.changepassword.post');
 

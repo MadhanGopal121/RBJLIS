@@ -93,7 +93,7 @@
         <li class="nav-item d-none d-md-inline-block mr-3">
           <span class="badge badge-primary px-3 py-2">
             <span class="user-status-dot"></span>
-            {{ auth()->user()->lab->name ?? 'RBJ Diagnostics' }}
+            {{ auth()->user()->lab?->name ?? 'RBJ Diagnostics' }}
           </span>
         </li>
 
@@ -112,7 +112,7 @@
             <div class="dropdown-header text-left bg-light rounded-top p-3">
               <h6 class="font-weight-bold text-dark mb-0">{{ auth()->user()->name ?? 'Staff User' }}</h6>
               <small class="text-muted">{{ auth()->user()->email ?? '' }}</small><br>
-              <span class="badge badge-info mt-1">{{ auth()->user()->role->name ?? 'User' }}</span>
+              <span class="badge badge-info mt-1">{{ auth()->user()->role?->name ?? 'User' }}</span>
             </div>
             <div class="dropdown-divider m-0"></div>
             <a href="{{ route('profile.index') }}" class="dropdown-item py-2">

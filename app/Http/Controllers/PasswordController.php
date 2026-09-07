@@ -9,14 +9,9 @@ use Illuminate\Support\Facades\Hash;
 
 class PasswordController extends Controller
 {
-    public function changepassword()
-    {
-        return view('password.changepassword');
-    }
-
     public function showChangePassword()
     {
-        return $this->changepassword();
+        return view('password.changepassword');
     }
 
     public function updatePassword(Request $request)
@@ -37,10 +32,5 @@ class PasswordController extends Controller
         $user->save();
 
         return back()->with('success', 'Password updated successfully.');
-    }
-
-    public function changePassword(Request $request)
-    {
-        return $this->updatePassword($request);
     }
 }

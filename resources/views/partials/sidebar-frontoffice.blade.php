@@ -16,7 +16,7 @@
     </div>
     <div class="info ml-2">
       <a href="javascript:void(0)" class="d-block font-weight-bold">{{ auth()->user()->name ?? 'Staff User' }}</a>
-      <small class="text-muted text-uppercase" style="font-size: 10px; letter-spacing: 0.05em;">{{ auth()->user()->role->name ?? 'Front Office' }}</small>
+      <small class="text-muted text-uppercase" style="font-size: 10px; letter-spacing: 0.05em;">{{ auth()->user()->role?->name ?? 'Front Office' }}</small>
     </div>
   </div>
 

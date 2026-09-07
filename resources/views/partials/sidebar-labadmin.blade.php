@@ -7,7 +7,7 @@
     </div>
     <div class="info ml-2">
       <a href="javascript:void(0)" class="d-block font-weight-bold">{{ auth()->user()->name ?? 'Lab Administrator' }}</a>
-      <small class="text-muted" style="font-size: 11px;">{{ auth()->user()->lab->name ?? 'Diagnostic Center' }}</small>
+      <small class="text-muted" style="font-size: 11px;">{{ auth()->user()->lab?->name ?? 'Diagnostic Center' }}</small>
     </div>
   </div>
 
