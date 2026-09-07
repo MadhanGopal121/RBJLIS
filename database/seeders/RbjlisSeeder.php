@@ -180,11 +180,11 @@ class RbjlisSeeder extends Seeder
                 'lab_id' => 1,
                 'department_id' => 1,
                 'name' => 'Complete Blood Count (CBC)',
-                'short_name' => 'CBC',
+                'test_code' => 'CBC',
                 'sample_type' => 'EDTA Whole Blood',
                 'method' => 'Automated Cell Counter',
                 'price' => 350.00,
-                'b2b_price' => 200.00,
+                'lab_price' => 200.00,
                 'status' => 1,
                 'created_by' => 1,
                 'created_on' => now(),
@@ -199,11 +199,11 @@ class RbjlisSeeder extends Seeder
                 'lab_id' => 1,
                 'department_id' => 2,
                 'name' => 'Lipid Profile',
-                'short_name' => 'LIPID',
+                'test_code' => 'LIPID',
                 'sample_type' => 'Plain Serum (Fasting)',
                 'method' => 'Enzymatic Colorimetric',
                 'price' => 650.00,
-                'b2b_price' => 400.00,
+                'lab_price' => 400.00,
                 'status' => 1,
                 'created_by' => 1,
                 'created_on' => now(),
@@ -216,8 +216,7 @@ class RbjlisSeeder extends Seeder
         DB::table('parameters')->updateOrInsert(
             ['id' => 1],
             [
-                'lab_id' => 1,
-                'test_id' => 1,
+                'diagnosticstests_id' => 1,
                 'name' => 'Hemoglobin (Hb)',
                 'units' => 'g/dL',
                 'default_value' => '13.0 - 17.0',
@@ -233,8 +232,7 @@ class RbjlisSeeder extends Seeder
         DB::table('parameters')->updateOrInsert(
             ['id' => 2],
             [
-                'lab_id' => 1,
-                'test_id' => 1,
+                'diagnosticstests_id' => 1,
                 'name' => 'Total Leucocyte Count (WBC)',
                 'units' => '/cumm',
                 'default_value' => '4000 - 11000',
@@ -250,8 +248,7 @@ class RbjlisSeeder extends Seeder
         DB::table('parameters')->updateOrInsert(
             ['id' => 3],
             [
-                'lab_id' => 1,
-                'test_id' => 1,
+                'diagnosticstests_id' => 1,
                 'name' => 'Platelet Count',
                 'units' => '/cumm',
                 'default_value' => '150000 - 450000',
@@ -268,8 +265,7 @@ class RbjlisSeeder extends Seeder
         DB::table('parameters')->updateOrInsert(
             ['id' => 4],
             [
-                'lab_id' => 1,
-                'test_id' => 2,
+                'diagnosticstests_id' => 2,
                 'name' => 'Total Cholesterol',
                 'units' => 'mg/dL',
                 'default_value' => '< 200',
@@ -285,8 +281,7 @@ class RbjlisSeeder extends Seeder
         DB::table('parameters')->updateOrInsert(
             ['id' => 5],
             [
-                'lab_id' => 1,
-                'test_id' => 2,
+                'diagnosticstests_id' => 2,
                 'name' => 'Triglycerides',
                 'units' => 'mg/dL',
                 'default_value' => '< 150',
@@ -302,8 +297,7 @@ class RbjlisSeeder extends Seeder
         DB::table('parameters')->updateOrInsert(
             ['id' => 6],
             [
-                'lab_id' => 1,
-                'test_id' => 2,
+                'diagnosticstests_id' => 2,
                 'name' => 'HDL (Good) Cholesterol',
                 'units' => 'mg/dL',
                 'default_value' => '> 40',
@@ -345,8 +339,7 @@ class RbjlisSeeder extends Seeder
                 'doctor_id' => 1,
                 'total_amount' => 1000.00,
                 'discount' => 100.00,
-                'paid_amount' => 900.00,
-                'due_amount' => 0.00,
+                'balance_amount' => 0.00,
                 'notes' => 'Fasting sample. Routine health checkup.',
                 'status' => 1,
                 'created_by' => 1,
@@ -362,7 +355,6 @@ class RbjlisSeeder extends Seeder
             [
                 'investigation_id' => 1,
                 'test_id' => 1,
-                'test_price' => 350.00,
                 'specimen_by' => 0,
                 'test_by' => 0,
                 'authenticated_by' => 0,
@@ -381,7 +373,6 @@ class RbjlisSeeder extends Seeder
             [
                 'investigation_id' => 1,
                 'test_id' => 2,
-                'test_price' => 650.00,
                 'specimen_by' => 0,
                 'test_by' => 0,
                 'authenticated_by' => 0,

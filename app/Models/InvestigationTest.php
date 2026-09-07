@@ -79,6 +79,11 @@ class InvestigationTest extends Model
         return $this->belongsTo(User::class, 'test_by');
     }
 
+    public function technician()
+    {
+        return $this->belongsTo(User::class, 'test_by');
+    }
+
     public function authenticator()
     {
         return $this->belongsTo(User::class, 'authenticated_by');
@@ -90,6 +95,11 @@ class InvestigationTest extends Model
     }
 
     public function results()
+    {
+        return $this->hasMany(InvestigationTestResult::class, 'investigation_test_id');
+    }
+
+    public function investigationTestResults()
     {
         return $this->hasMany(InvestigationTestResult::class, 'investigation_test_id');
     }
