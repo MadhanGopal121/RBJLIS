@@ -1,0 +1,16 @@
+@page {
+  size: A4;
+  -webkit-print-color-adjust:exact;
+}
+
+  html, body {
+    width: 210mm;
+    height: 297mm;
+    /**/
+    background-color:transparent;
+      -webkit-print-color-adjust:exact;
+  }
+.main-header, .content-wrapper{
+	margin-left:0px !important;
+	background-color:transparent !important;
+}

@@ -1,0 +1,23 @@
+body, .btn {
+	font-size: 16px;
+}
+
+.card {
+	box-shadow: none;
+}
+
+.error-text {
+	color: #ff0000;
+}
+
+[class*="icheck-"]>input:first-child+label::before {
+	width: 18px;
+	height: 18px;
+	background-color: #fff;
+}
+
+[class*="icheck-"]>input:first-child:checked+label::after {
+	top: -3px;
+	left: -2px;
+	height: 12px;
+}

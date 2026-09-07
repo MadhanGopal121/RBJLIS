@@ -1,0 +1,214 @@
+@media print {
+    [class*="col-md"], [class*="col-sm"], [class*="col-xs"] {
+        float: none;
+    }
+     .container {
+        width:100%;
+    }
+}
+
+.mainlogo {
+	height: 45px;
+	width: auto;
+}
+
+ul.pagination {
+    margin: 10px 0;
+    white-space: nowrap;
+    justify-content: flex-end;
+    
+}
+
+ul.pagination li a {
+    position: relative;
+    display: block;
+    padding: .5rem .75rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    color: #007bff;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+}
+ul.pagination li.active a {
+	z-index: 3;
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+
+
+	}
+
+
+.teststatus-dot{
+	content:" ";
+	width:10px;
+	height:10px;
+	display:inline-block;
+	border-radius: 50%;
+	margin:0px 8px;
+}
+.teststatus-dot.declined{
+	background-color:#ff0000;
+}
+
+.teststatus-bg.declined{
+	background-color:rgba(255,0,0,0.4);
+}
+
+.reportstatus {
+	display: inline-block;
+	margin-left: 10px;
+	margin-right: 10px;
+	font-size: 12px;
+	color: #fff;
+	padding: 3px 5px;
+	border-radius: 5px;
+}
+
+.uniqueid {
+	width: 200px;
+	display: inline-block;
+}
+
+.report .collapse.show {
+	background-color: rgba(229, 255, 204, 0.4);
+}
+
+.reportinfo tbody {
+	font-size: 14px;
+}
+
+.reportinfo {
+	padding: 5px;
+}
+
+.reportinfo td {
+	padding: 5px 5px;
+}
+
+.reportstatus.pending {
+	background-color: #808080;
+}
+
+.reportstatus.completed {
+	background-color: #008000;
+}
+
+.reportstatus.pcompleted {
+	background-color: #FFA500;
+}
+
+.emergency {
+	background-color: #ff0000;
+}
+
+.tblepname {
+	width: 50%;
+}
+
+.tblecreated {
+	width: 15%;
+}
+
+.tblecount {
+	width: 5%;
+}
+
+.tbleamt {
+	width: 15%;
+}
+
+.message {
+	padding: 10px;
+	margin-bottom: 10px;
+	text-align: center;
+	font-weight: bold;
+	max-width: 80%;
+	margin: 0 auto 20px auto;
+}
+
+.message.success {
+	background-color: rgba(255, 255, 255, 0.9);
+}
+
+.message.error {
+	background-color: rgba(255, 0, 0, 0.2);
+	border: 1px solid #f00;
+	color: #f00;
+}
+
+.compressed-frm .form-group, .compressed-frm label {
+	margin-bottom: 4px;
+}
+
+.compressed-frm .form-control {
+	padding: 2px 3px;
+	height: auto;
+}
+
+.testrequired {
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+.testrequired .row {
+	background-color: #fff;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	margin-left: 0px;
+	margin-right: 0px;
+}
+
+.testrequired .heading {
+	background-color: rgba(0, 0, 0, 0.2);
+	margin-botton: 10px;
+}
+
+.testrequired .reportstatus, .testrequired .approvalstatus {
+	text-align: center;
+	font-size: 10px;
+}
+
+.testrequired .reportstatus {
+	color: blue;
+}
+
+.testrequired .approvalstatus {
+	color: #ff0000;
+}
+
+.testrequired label {
+	display: block;
+}
+
+
+
+.pay-totals {
+	margin-bottom: 15px;
+}
+
+.pay-totals label {
+	display: block;
+	text-align: right;
+}
+
+.report-header {
+	padding: 0px;
+}
+
+.report-head-table {
+	margin: 0px;
+}
+
+.reporthead {
+	width: 100%;
+	padding: 0px;
+}
+
+.reporthead td {
+	text-align: left;
+}
+
+.accordion .card {
+	margin-bottom: 0px;
+}
