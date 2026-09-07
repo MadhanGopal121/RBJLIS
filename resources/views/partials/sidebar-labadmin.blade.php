@@ -30,6 +30,13 @@
       </li>
 
       <li class="nav-item">
+        <a href="{{ route('labinvestigation.index') }}" class="nav-link {{ request()->routeIs('labinvestigation.*') ? 'active' : '' }}">
+          <i class="nav-icon fas fa-microscope"></i>
+          <p>Investigation Pipeline</p>
+        </a>
+      </li>
+
+      <li class="nav-item">
         <a href="{{ route('reports.index') }}" class="nav-link {{ request()->routeIs('reports.index') ? 'active' : '' }}">
           <i class="nav-icon fas fa-file-medical-alt"></i>
           <p>Pathology Reports</p>
