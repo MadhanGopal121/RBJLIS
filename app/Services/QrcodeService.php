@@ -51,30 +51,38 @@ class QrcodeService
      * Generate NPCI Standard Dynamic UPI QR Code
      * (Scannable by Google Pay, PhonePe, Paytm, BHIM, Cred, AmazonPay)
      */
-    public function generateUpiQr(string $vpa, string $payeeName, float $amount, string $transactionRef, string $note = 'Lab Investigation Bill'): string
+    public function generateUpiQr(string $vpa, string $payeeName, float $amount, string $transactionRef, string $note = 'Lab Bill'): string
     {
         $vpa = trim($vpa);
         if (empty($vpa)) {
             $vpa = 'rbjlab@upi';
         }
 
-        $params = [
-            'pa' => $vpa,
-            'pn' => $payeeName ?: 'RBJ Diagnostics',
-            'am' => number_format($amount, 2, '.', ''),
-            'tr' => $transactionRef,
-            'tn' => substr($note, 0, 50),
-            'cu' => 'INR',
-        ];
+        // Sanitize payee name to remove HTML entities (&amp;) and invalid punctuation
+        $cleanPayee = html_entity_decode($payeeName ?: 'RBJ Diagnostics', ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $cleanPayee = preg_replace('/[^a-zA-Z0-9 ]/', ' ', $cleanPayee);
+        $cleanPayee = trim(preg_replace('/\s+/', ' ', $cleanPayee));
 
-        $upiString = 'upi://pay?' . http_build_query($params);
+        $cleanNote = html_entity_decode($note ?: 'Lab Bill', ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $cleanNote = preg_replace('/[^a-zA-Z0-9 -]/', ' ', $cleanNote);
+        $cleanNote = trim(preg_replace('/\s+/', ' ', $cleanNote));
+
+        $cleanAmount = number_format($amount, 2, '.', '');
+        $cleanRef = preg_replace('/[^a-zA-Z0-9_-]/', '_', $transactionRef);
+
+        // Build standard NPCI URI
+        $upiString = 'upi://pay?pa=' . rawurlencode($vpa)
+                   . '&pn=' . rawurlencode($cleanPayee)
+                   . '&am=' . $cleanAmount
+                   . '&tr=' . rawurlencode($cleanRef)
+                   . '&tn=' . rawurlencode(substr($cleanNote, 0, 30))
+                   . '&cu=INR';
 
         $targetDir = public_path('img/uploads/upiqrcodes');
         if (!file_exists($targetDir)) {
             @mkdir($targetDir, 0777, true);
         }
 
-        $cleanRef = preg_replace('/[^a-zA-Z0-9_-]/', '_', $transactionRef);
         $relativeUrl = '/img/uploads/upiqrcodes/UPI-' . $cleanRef . '.png';
         $fullPath = public_path('img/uploads/upiqrcodes/UPI-' . $cleanRef . '.png');
 

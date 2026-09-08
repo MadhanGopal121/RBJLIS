@@ -29,23 +29,26 @@ class PaymentController extends Controller
         }
 
         // Generate dynamic UPI QR Code
-        $vpa = $lab?->upi_id ?: 'rbjlab@upi';
-        $payeeName = $lab?->upi_name ?: ($lab?->name ?: 'RBJ Diagnostics');
+        $vpa = trim($lab?->upi_id ?: 'rbjlab@upi');
+        $rawPayeeName = $lab?->upi_name ?: ($lab?->name ?: 'RBJ Diagnostics');
+        $cleanPayeeName = trim(preg_replace('/\s+/', ' ', preg_replace('/[^a-zA-Z0-9 ]/', ' ', html_entity_decode($rawPayeeName, ENT_QUOTES | ENT_HTML5, 'UTF-8'))));
+        $cleanNote = 'INV-' . $investigation->id;
+        $cleanAmount = number_format($amountToPay, 2, '.', '');
         $transRef = 'INV' . $investigation->id . '_' . time();
-        $upiQrUrl = $qrcodeService->generateUpiQr($vpa, $payeeName, $amountToPay, $transRef, 'INV-' . $investigation->id);
+
+        $upiQrUrl = $qrcodeService->generateUpiQr($vpa, $cleanPayeeName, $amountToPay, $transRef, $cleanNote);
 
         // Standard UPI Deep Link for mobile
-        $upiIntentUrl = 'upi://pay?' . http_build_query([
-            'pa' => $vpa,
-            'pn' => $payeeName,
-            'am' => number_format($amountToPay, 2, '.', ''),
-            'tr' => $transRef,
-            'tn' => 'INV-' . $investigation->id,
-            'cu' => 'INR',
-        ]);
+        $upiIntentUrl = 'upi://pay?pa=' . rawurlencode($vpa)
+                      . '&pn=' . rawurlencode($cleanPayeeName)
+                      . '&am=' . $cleanAmount
+                      . '&tr=' . rawurlencode($transRef)
+                      . '&tn=' . rawurlencode($cleanNote)
+                      . '&cu=INR';
 
         $stripeService = new StripePaymentService($lab);
         $stripeEnabled = $stripeService->isConfigured() || (bool) $lab?->enable_stripe;
+        $payeeName = $cleanPayeeName;
 
         return view('payment.checkout', compact('investigation', 'lab', 'amountToPay', 'upiQrUrl', 'upiIntentUrl', 'stripeEnabled', 'vpa', 'payeeName'));
     }
