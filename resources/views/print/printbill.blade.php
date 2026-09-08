@@ -139,7 +139,7 @@
     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 15px;">
       <div style="border: 1px dashed #007bff; padding: 10px; border-radius: 6px; text-align: center; max-width: 200px; background: #F8FAFC;">
         @if(!empty($upiQrPath))
-          <img src="{{ asset($upiQrPath) }}" style="width: 110px; height: 110px;" alt="UPI QR Code"><br>
+          <img src="{{ asset($upiQrPath) }}?t={{ time() }}" style="width: 110px; height: 110px;" alt="UPI QR Code"><br>
           <strong style="font-size: 11px; color: #007bff;">Scan & Pay via UPI</strong><br>
           <small style="font-size: 10px; color: #555;">GPay / PhonePe / Paytm</small><br>
           <small style="font-size: 10px; color: #777;">UPI VPA: {{ $vpa ?? 'rbjlab@upi' }}</small>

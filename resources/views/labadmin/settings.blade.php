@@ -113,14 +113,14 @@
                 <div class="col-md-6">
                   <div class="form-group">
                     <label for="upi_id" class="font-weight-bold">Lab UPI VPA ID <span class="text-danger">*</span></label>
-                    <input type="text" name="upi_id" id="upi_id" class="form-control" placeholder="e.g. rbjdiagnostics@okaxis or 9876543210@paytm" value="{{ old('upi_id', $labinfo->upi_id ?? 'rbjlab@upi') }}">
-                    <small class="text-muted">Payments will be routed directly to this bank-linked Virtual Payment Address.</small>
+                    <input type="text" name="upi_id" id="upi_id" class="form-control" placeholder="e.g. yourname@okaxis, 9876543210@paytm, or yourlab@ybl" value="{{ old('upi_id', $labinfo->upi_id) }}">
+                    <small class="text-muted">Enter your actual Google Pay / PhonePe / Paytm bank UPI ID.</small>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
                     <label for="upi_name" class="font-weight-bold">Payee Business / Lab Name</label>
-                    <input type="text" name="upi_name" id="upi_name" class="form-control" placeholder="e.g. RBJ Diagnostics & Research" value="{{ old('upi_name', $labinfo->upi_name ?? $labinfo->name) }}">
+                    <input type="text" name="upi_name" id="upi_name" class="form-control" placeholder="e.g. RBJ Diagnostics" value="{{ old('upi_name', $labinfo->upi_name) }}">
                     <small class="text-muted">Display name visible to patient when scanning QR code.</small>
                   </div>
                 </div>
